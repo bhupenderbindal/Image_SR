@@ -1,26 +1,18 @@
-import os
-from math import log10
-
-from abc import ABC, abstractmethod
-
-import torch
-import torch.nn as nn
-
-import torch.backends.cudnn as cudnn
-
-from .progress_bar import progress_bar
-from src.losses.FDL import FDL_loss
-
-from src.losses.contextual_los import contextual_loss as cl
-
-from kornia.contrib import extract_tensor_patches
-import math
-import torch.nn.functional as F
-import random
 from src.losses import lpipss
 from src.visualization.plot_utils import EarlyStopper, plot_image_grid
 from src.srcnn.dataset.dataset import aug_transform_training
 from src.my_logger import Logger
+from src.losses.FDL import FDL_loss
+from src.losses.contextual_los import contextual_loss as cl
+
+import random
+from math import log10
+
+from abc import ABC, abstractmethod
+import torch
+import torch.nn as nn
+import torch.backends.cudnn as cudnn
+from kornia.contrib import extract_tensor_patches
 
 
 class Trainer(ABC):

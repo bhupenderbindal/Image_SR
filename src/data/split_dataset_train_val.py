@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
-import click
 import logging
 from pathlib import Path
 import shutil
 import random
 import numpy as np
+
 """
 split a train folder in train and val folder in defined ratio
 """
-
 
 
 def main(input_dir=None, ratio=None):
@@ -17,15 +16,12 @@ def main(input_dir=None, ratio=None):
     random.seed(21)
     logger = logging.getLogger(__name__)
     logger.info("splitting data set from train data into train and val")
-    # project_dir = Path(__file__).resolve().parents[2]
-    if not isinstance(input_dir,Path):
+    if not isinstance(input_dir, Path):
         input_dir = Path(input_dir)
-    output_dir = input_dir.parents[0].joinpath(input_dir.name +"_train_val_test")
-    # raw_data_dir = project_dir.joinpath("data", "raw", "Data")
-    # train_data_dir = output_dir.joinpath( "train")
-    train_split_dir = output_dir.joinpath( "train")
-    val_split_dir = output_dir.joinpath( "val")
-    test_split_dir = output_dir.joinpath( "test")
+    output_dir = input_dir.parents[0].joinpath(input_dir.name + "_train_val_test")
+    train_split_dir = output_dir.joinpath("train")
+    val_split_dir = output_dir.joinpath("val")
+    test_split_dir = output_dir.joinpath("test")
     state = random.getstate()
     for child in input_dir.iterdir():
         # creating a list of allfiles from the class directory in train directory
@@ -34,10 +30,11 @@ def main(input_dir=None, ratio=None):
         random.setstate(state)
         random.shuffle(allfilenames)
 
-        # trainfilenames, valfilenames, testfilenames = np.split(np.array(allfilenames),[int(len(allfilenames)*0.7), int(len(allfilenames)*0.2)])
-        trainfilenames = allfilenames[:int(len(allfilenames)*ratio[0])]
-        valfilenames = allfilenames[int(len(allfilenames)*ratio[0]): int(len(allfilenames)*sum(ratio))]
-        testfilenames = allfilenames[int(len(allfilenames)*sum(ratio)):]
+        trainfilenames = allfilenames[: int(len(allfilenames) * ratio[0])]
+        valfilenames = allfilenames[
+            int(len(allfilenames) * ratio[0]) : int(len(allfilenames) * sum(ratio))
+        ]
+        testfilenames = allfilenames[int(len(allfilenames) * sum(ratio)) :]
         print(f"total images of class {child.name}: {len(allfilenames)}")
         print(f"train images of class {child.name}: {len(trainfilenames)}")
         print(f"val images of class {child.name}: {len(valfilenames)}")
@@ -50,7 +47,7 @@ def main(input_dir=None, ratio=None):
             safe_rmdir(str(train_class_dir))
             print(f"===== {train_class_dir} exists and overwriting it")
             train_class_dir.mkdir(parents=True, exist_ok=True)
-        
+
         val_class_dir = val_split_dir.joinpath(child.name)
         try:
             val_class_dir.mkdir(parents=True, exist_ok=False)
@@ -70,13 +67,14 @@ def main(input_dir=None, ratio=None):
         ## Copy pasting images to target directory
 
         for name in trainfilenames:
-            shutil.copy(name, train_class_dir )
+            shutil.copy(name, train_class_dir)
 
         for name in valfilenames:
-            shutil.copy(name, val_class_dir )
+            shutil.copy(name, val_class_dir)
 
         for name in testfilenames:
-            shutil.copy(name, test_class_dir )
+            shutil.copy(name, test_class_dir)
+
 
 def safe_rmdir(path: str):
     # List of system directories to exclude
@@ -95,8 +93,7 @@ def safe_rmdir(path: str):
     important_dirs = ["C:\\", "/home/"]
     all_dirs = system_dirs + important_dirs
     # Check if path is in the list of system directories or important directories
-    if any(
-        path.lower().startswith(directory.lower()) for directory in all_dirs):
+    if any(path.lower().startswith(directory.lower()) for directory in all_dirs):
         print(
             f"Cannot delete {path}. This is a system directory or contains important files."
         )
@@ -107,8 +104,10 @@ def safe_rmdir(path: str):
         shutil.rmtree(path)
     else:
         return
+
+
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    logging.basicConfig(level=logging.INFO, format=log_fmt)  
+    logging.basicConfig(level=logging.INFO, format=log_fmt)
 
     main()

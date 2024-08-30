@@ -1,11 +1,8 @@
-import argparse
 import cv2
 from PIL import Image
-
-Image.MAX_IMAGE_PIXELS = None
-import numpy as np
 import skimage as ski
 
+Image.MAX_IMAGE_PIXELS = None
 SCALE = 2
 
 

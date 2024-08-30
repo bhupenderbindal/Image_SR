@@ -92,14 +92,17 @@ target/
 /data/raw/all_data/Images_set1/
 /data/raw/all_data/Images_set2/
 /data/raw/all_data/Images_set3/
+/data/raw/all_data/test_images/
+/data/raw/div2k_data
+/data/raw/div2krk
+
 /data/processed/
 
-/models
-
 # ignoring data 
+/model/*/*.jpg
+/model/*/*.png
+
 *.mat
-*.png
-*.jpg
 *.pdf
 *.zip
 

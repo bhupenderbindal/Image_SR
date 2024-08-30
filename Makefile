@@ -61,18 +61,12 @@ dbpn:
 	python -m src.srcnn.main --model dbpn --batchSize $(BS) --lr $(LR) --upscale_factor 2 --nEpochs $(EP) --datatype $(DT) --channeltype $(CT) --expname $(EXP) --losstype $(LOSSTYPE) --set_num $(SETNUM); \
 	
 
-dbpnsmall:
-	@echo "========== training and testing dbpn ======="; \
-	echo $(PWD); \
-	python -m src.srcnn.main --model dbpnsmall --batchSize $(BS) --lr $(LR) --upscale_factor 2 --nEpochs $(EP) --datatype $(DT) --channeltype $(CT) --expname $(EXP); \
-	
 kernelgandiv2k:
 	@echo "========== training and testing KernelGAN + ZSSR ======="; \
 	echo $(PWD); \
 	python -m src.KernelGAN-master_v1.train --SR --real --paired-data-dir ./data/raw/Set5
 	python -m src.KernelGAN-master_v1.train --SR --real --paired-data-dir ./data/raw/div2k_data/val/
 	python -m src.KernelGAN-master_v1.train --SR --real --paired-data-dir ./data/raw/div2k_data/test/
-
 
 kernelgandiv2krk:
 	@echo "========== training and testing KernelGAN + ZSSR ======="; \
@@ -93,29 +87,20 @@ kernelganset3:
 	@echo "========== training and testing KernelGAN + ZSSR ======="; \
 	echo $(PWD); \
 	python -m src.KernelGAN-master_v1.train --SR --real --paired-data-dir ./data/processed/set_3/img_pairs_train_val_test/val/
-	
-testkernelgan:
-	@echo "========== training and testing KernelGAN + ZSSR ======="; \
-	echo $(PWD); \
-	python -m src.KernelGAN-master_v1.train --real --paired-data-dir ./data/val_mixed/
+
 
 # install panel package	
 vizapp:
 	panel serve src/visualization/viztool/vizapp2.py  --autoreload --port 5008
-
-genkernel:
-	cd src/usrnet/; \
-	echo $(PWD); \
-	python generate_kernels.py 
 
 ## Delete all compiled Python files
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
 
-## Lint using flake8
+## Lint  
 lint:
-	flake8 src
+	ruff check ./src/ --ignore=F841,E741
 
 ## Set up python interpreter environment
 create_environment:

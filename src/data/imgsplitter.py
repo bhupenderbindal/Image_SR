@@ -8,9 +8,6 @@ from dataclasses import dataclass
 
 from PIL import Image
 
-# img.save('test.jpg', quality=100, subsampling=0)
-# im.save('/path/to/cover-2.jpg', format='JPEG', subsampling=0, quality=100)
-
 
 def split_image(
     image_path,

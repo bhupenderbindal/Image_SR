@@ -1,25 +1,5 @@
-from __future__ import print_function
-import os
-from datetime import datetime
-import argparse
-import torch
-import torch.backends.cudnn as cudnn
-from PIL import Image
-from torchvision.transforms import ToTensor
-from pathlib import Path
-import time
-
-import numpy as np
-
+from src.my_logger import Logger
 from src.visualization.plot_utils import inference_plot_and_save
-
-from os import listdir
-from os.path import join
-
-import torch.utils.data as data
-from PIL import Image
-import torchvision.transforms.functional as F
-
 from src.utils.utils import is_image_file
 from src.visualization.plot_utils import plot_image_grid, calc_avg_metrics
 from src.utils.patch_and_combine import (
@@ -27,8 +7,21 @@ from src.utils.patch_and_combine import (
     merge_hr_patches,
 )
 
+import os
+from os import listdir
+from datetime import datetime
+import argparse
+from pathlib import Path
+import time
+
+
+import torch
+import torch.backends.cudnn as cudnn
+from PIL import Image
+from torchvision.transforms import ToTensor
+import numpy as np
+import torchvision.transforms.functional as F
 from torch.profiler import profile, record_function, ProfilerActivity
-from src.my_logger import Logger
 
 
 class Inference:
@@ -38,6 +31,8 @@ class Inference:
         self.inference_dir = Path(inference_dir)
         self.allfilenames = list(self.inference_dir.rglob("*.jpg"))
 
+        self.input_filenames = [x for x in (self.allfilenames)]
+        # filtering images with "200" resolution
         self.input_filenames = [
             x for x in (self.allfilenames) if is_image_file(str(x)) and "200x" in str(x)
         ]
@@ -67,7 +62,9 @@ class Inference:
 
     @torch.inference_mode(mode=True)
     def inference(self):
-        logger = Logger().get_logger()
+        logger_instance = Logger()
+        logger_instance.initialize("inference")
+        logger = logger_instance.get_logger()
         times = []
         for lr_path in self.input_filenames:
             start_time = time.perf_counter()
@@ -181,7 +178,8 @@ def main():
 
     args = parser.parse_args()
     print(args)
-    inference_dir = os.getcwd() + "/data/raw/all_data/Images_set3"
+    # setting the inference directory containing test data
+    inference_dir = os.getcwd() + "/data/raw/all_data/test_images"
     inferencer = Inference(
         inference_dir, args.save_dir, args.file_name, args.channeltype
     )
@@ -190,3 +188,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # example usage to run from cli
+    # python -m src.srcnn.inference  --save_dir ./model --channeltype rgb

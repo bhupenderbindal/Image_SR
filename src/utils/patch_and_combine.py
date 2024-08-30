@@ -63,8 +63,6 @@ def split_lr_merge_hr(lr_img, patch_size, scale=2):
         lr_img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC
     )
 
-    # now merging the scaled versions of lr_patches shall give same as scaled bicubic-hr
-
     # first scaling each patch
     hr_patches = []
     for patch in lr_patches:
@@ -83,6 +81,7 @@ def split_lr_merge_hr(lr_img, patch_size, scale=2):
     print(
         f"difference between scaled hr image and merged scaled patches of lr image = {diff_}"
     )
+    breakpoint()
     compare_images(bicubic_hr, hr_merged_img)
 
 
@@ -124,6 +123,6 @@ def merge_hr_patches(hr_patches, hr_indices):
 
 
 if __name__ == "__main__":
-    lr_path = "src/utils/butterfly.png"
+    lr_path = "data/raw/Set5/input_lr/butterfly.png"
     img = Image.open(lr_path)
     split_lr_merge_hr(img, 200)

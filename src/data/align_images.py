@@ -1,14 +1,9 @@
 # Adapted from: https://github.com/khufkens/align_images/blob/42937c5144d3d8ca1759cf5c136c2c0dbbd91d45/align_images.py
 
-# Import necessary libraries.
-import os, argparse
 from dataclasses import dataclass
 import cv2
 import numpy as np
 from numpy.fft import fft2, ifft2, fftshift
-
-from src.visualization import plot_utils
-from src.my_logger import Logger
 
 
 def rotationAlign(im1, im2):
@@ -124,9 +119,7 @@ def featureAlign(im1, im2, args):
 
     # Use homography
     height, width, channels = im2.shape
-    im1Reg = cv2.warpPerspective(
-        im1, h, (width, height)
-    )  # ,borderMode =cv2.BORDER_CONSTANT,borderValue=(999,999,999))
+    im1Reg = cv2.warpPerspective(im1, h, (width, height))
     max_rect = crop_max_rectangle(im1Reg)
 
     return im1Reg, h, max_rect
@@ -187,32 +180,6 @@ def crop_max_rectangle(image):
         rect = cv2.boundingRect(max_contour)
 
     return rect
-
-
-def crop_max_rectangle2(image):
-
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # Threshold the image to create a binary mask of black regions
-    _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
-
-    # Find the coordinates of all non-black (non-zero) pixels
-    non_zero_pixels = np.argwhere(thresh > 0)
-
-    if non_zero_pixels.size == 0:
-        print("The image is entirely black.")
-        return None
-
-    # Get the bounding box of non-black pixels
-    top_left = non_zero_pixels.min(axis=0)
-    bottom_right = non_zero_pixels.max(axis=0)
-
-    # Crop the image using the bounding box coordinates
-    x_min, y_min = top_left
-    x_max, y_max = bottom_right
-    cropped_image = image[x_min : x_max + 1, y_min : y_max + 1]
-
-    return y_min, x_min, y_max, x_max
 
 
 # FFT phase correlation
@@ -281,8 +248,3 @@ def align_output_target(output, target, mode):
         print(warp_matrix)
 
     return output, max_rect
-
-
-if __name__ == "__main__":
-
-    print("used as a function and default args are set in the dataclass")

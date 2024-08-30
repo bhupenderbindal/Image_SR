@@ -191,17 +191,7 @@ def main():
                 args.losstype,
             )
         elif args.model == "dbpn":
-            # source: https://www.toyota-ti.ac.jp/Lab/Denshi/iim/members/muhammad.haris/projects/DBPN.html
             args.dbpntype = "dbpn"
-            model = DBPNTrainer(
-                args,
-                training_data_loader,
-                validation_data_loader,
-                testing_data_loader,
-                args.losstype,
-            )
-        elif args.model == "dbpnsmall":
-            args.dbpntype = "dbpnsmall"
             model = DBPNTrainer(
                 args,
                 training_data_loader,
@@ -234,7 +224,7 @@ def main():
 def model_validate(args, validation_paired_dir):
     if args.model == "dbpn":
         validator = MixValidation(
-            paired_data_dir=validation_paired_dir, args=args, patchwise=True, ps=512
+            paired_data_dir=validation_paired_dir, args=args, patchwise=True, ps=256
         )
     else:
         validator = MixValidation(paired_data_dir=validation_paired_dir, args=args)
@@ -251,7 +241,7 @@ def model_test(args, PAIRED_DATA_DIR):
         )
         if args.model == "dbpn":
             validator = MixValidation(
-                paired_data_dir=test_paired_dir, args=args, patchwise=True, ps=512
+                paired_data_dir=test_paired_dir, args=args, patchwise=True, ps=256
             )
         else:
             validator = MixValidation(paired_data_dir=test_paired_dir, args=args)
@@ -259,6 +249,7 @@ def model_test(args, PAIRED_DATA_DIR):
 
 
 def model_inference(args):
+    # hardcoded path for unprocessed test images
     inference_dir = os.getcwd() + "/data/raw/all_data/Images_set3"
     inferencer = Inference(inference_dir, args.save_dir, channeltype=args.channeltype)
     inferencer.inference()

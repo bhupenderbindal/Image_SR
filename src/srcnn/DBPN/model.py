@@ -1,8 +1,6 @@
-import torch
-import math
-import torch.nn as nn
-
 #  source: https://github.com/alterzero/DBPN-Pytorch/blob/6eb48caaa1aa6f4897d5c902a4b4f15ff3ac2da7/dbpn.py
+import torch
+import torch.nn as nn
 
 
 class DBPN(nn.Module):
